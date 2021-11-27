@@ -6,8 +6,27 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from "@heroicons/react/solid";
-
+import { useState } from "react";
+import "react-date-range/dist/styles.css"; //main style file
+import "react-date-range/dist/theme/default.css"; //theme style file
+import { DateRangePicker } from "react-date-range";
 function Header() {
+  const [searchInput, setSearchInput] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  
+  const handleSelect = (ranges) => {
+    setStartDate(ranges.selection.startDate);
+    setEndDate(ranges.selection.endDate);
+  }
+
+  const selectionRange = {
+    startDate: startDate,
+    endDate: endDate,
+    key: "selection",
+  };
+
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md py-5 px-5 md:px-10">
       {/*Left*/}
@@ -23,6 +42,8 @@ function Header() {
       {/*Middle*/}
       <div className="flex items-center mx-3 md:border-2 rounded-full py-2 shadow-sm">
         <input
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           className="px-3 truncate text-overflow:ellipsis bg-transparent outline-none flex-grow text-sm text-gray-600 placeholder-gray-400"
           type="text"
           placeholder="Search"
@@ -33,12 +54,22 @@ function Header() {
       {/*Right*/}
       <div className="flex items-center space-x-4 justify-end text-gray-500">
         <p className="hidden md:inline pl-2 cursor-pointer">Become a Host</p>
-        <GlobeAltIcon className="h-8 md:h-6 " />
+        <GlobeAltIcon className=" md:inline-flex h-6 pl-2   " />
         <div className="flex item curs-center space-x-2 border-2 p-2 rounded-full cursor-pointer">
           <MenuIcon className="h-6" />
           <UserCircleIcon className="h-6" />
         </div>
       </div>
+      {searchInput && (
+        <div className="flex flex-col col-span-3 mx-auto mt-5">
+          <DateRangePicker
+            ranges={[selectionRange]}
+            minDate={new Date()}
+            rangeColors={["#FD5B61"]}
+            onChange={handleSelect}
+          />
+        </div>
+      )}
     </header>
   );
 }
